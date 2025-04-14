@@ -1,71 +1,71 @@
 import pygame
-
 pygame.init()
 
-SCREENWIDTH = 800
-SCREENHEIGHT = 600
+pygame.display.set_caption('Rocket in Space')
+screen_width=700
+screen_height=500
+screen=pygame.display.set_mode([screen_width,screen_height])
 
-
-SCREEN = pygame.display.set_mode([SCREENWIDTH,SCREENHEIGHT])
-pygame.display.set_caption("Sprite Test 1")
-
+#Player Class
 class Player(pygame.sprite.Sprite):
-    #property
-    def __init__(self):
-        #super extracts stuff from sprite
-        super().__init__()
-        self.image = pygame.image.load("rocket.png")
-        self.image = pygame.transform.scale(self.image,(70,100))
-        self.rect =  self.image.get_rect()
+  #Attribute
+  def __init__(self):
+    #Super extracts attributes of sprite class (Parent class)
+    super().__init__()
+    self.image=pygame.image.load("rocket.png")
+    self.image=pygame.transform.scale(self.image,(70,100))
+    self.rect=self.image.get_rect()
 
-        #function
-        def update(self,keys_pressed):
-            if(keys_pressed[pygame.K_UP]):
-                self.rect.move_ip(0,-5)
+  #Function
+  def update(self,pressed_keys):
+    if(pressed_keys[pygame.K_UP]):
+      self.rect.move_ip(0,-5)
+    if(pressed_keys[pygame.K_DOWN]):
+      self.rect.move_ip(0,5)
+    if(pressed_keys[pygame.K_RIGHT]):
+      self.rect.move_ip(5,0)
+    if(pressed_keys[pygame.K_LEFT]):
+      self.rect.move_ip(-5,0)
 
-            if(keys_pressed[pygame.K_DOWN]):
-                self.rect.move_ip(0,5)
+    #Make the sprite stay inside the screen
+    if self.rect.left < 0:
+      self.rect.left = 0
+    if self.rect.right > screen_width:
+      self.rect.right = screen_width
+    if self.rect.top < 0:
+      self.rect.top = 0
+    if self.rect.bottom > screen_height:
+      self.rect.bottom = screen_height
 
-            if(keys_pressed[pygame.K_LEFT]):
-                self.rect.move_ip(-5,0)
-            
-            if(keys_pressed[pygame.K_RIGHT]):
-                self.rect.move_ip(5,0)
+#Create a group
+sprites=pygame.sprite.Group()
 
-            #Boundary
-            if self.rect.left < 0:
-                self.rect.left = 0
-            
-            if self.rect.right > SCREENWIDTH:
-                self.rect.right = SCREENWIDTH
+def startGame():
+  #Create the object
+  rocket=Player()
+  sprites.add(rocket)
 
-            if self.rect.top < 0:
-                self.rect.top = 0
-            
-            if self.rect.bottom > SCREENHEIGHT:
-                self.rect.bottom= SCREENHEIGHT
+  #Infinite loop to start game
+  while True:
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        pygame.quit()
+        exit(0)
 
-#create a group
+    pressed_keys=pygame.key.get_pressed()
+    rocket.update(pressed_keys)
+    screen.blit(pygame.image.load("space.png"),(0,0))
+    sprites.draw(screen)
+    pygame.display.update()
 
-spriteg = pygame.sprite.Group()            
-            
-def game_start():
-
-    while True:
-        #create object
-        rocket = Player()
-        spriteg.add(rocket)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-
-        keys_pressed= pygame.key.get_pressed()
-        rocket.update(keys_pressed)
-
-        SCREEN.blit(pygame.image.load("space.png"),(0,0))
-        spriteg.draw(SCREEN)  
-        pygame.display.update()
+startGame()
 
 
-game_start()
+
+
+
+
+
+
+
+
